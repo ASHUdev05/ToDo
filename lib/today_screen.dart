@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todo_offline/detail_screen.dart';
 import 'package:todo_offline/model/todo.dart';
-import 'package:todo_offline/navbarControllers/analytics_screen.dart';
+import 'package:todo_offline/navbarControllers/add_todo_screen.dart';
 import 'package:todo_offline/model/todo_db.dart';
 
 class TodayScreen extends StatefulWidget {
@@ -36,6 +36,16 @@ class _TodayScreenState extends State<TodayScreen> {
     });
   }
 
+  void editTodo(Todo todo) async {
+    await _todoDatabase.updateTodo(todo);
+    _loadTodos();
+  }
+
+  void deleteTodo(String id) async {
+    await _todoDatabase.deleteTodo(id);
+    _loadTodos();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,6 +60,34 @@ class _TodayScreenState extends State<TodayScreen> {
               itemBuilder: (context, index) {
                 return ListTile(
                   title: Text(todos[index].title),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.edit),
+                        onPressed: () {
+                          // Navigate to edit screen or show edit dialog
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AddTodoScreen(
+                                onAddTodo: (updatedTodo) {
+                                  editTodo(updatedTodo);
+                                },
+                                todo: todos[index],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () {
+                          deleteTodo(todos[index].id);
+                        },
+                      ),
+                    ],
+                  ),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -69,7 +107,7 @@ class _TodayScreenState extends State<TodayScreen> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => AnalyticsScreen(
+                  builder: (context) => AddTodoScreen(
                         onAddTodo: addTodo,
                       )));
         },
