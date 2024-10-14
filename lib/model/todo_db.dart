@@ -19,15 +19,19 @@ class TodoDatabase {
       join(getDatabasesPath().toString(), 'todo_database.db'),
       onCreate: (db, version) {
         return db.execute(
-          'CREATE TABLE todos(id TEXT PRIMARY KEY, title TEXT, description TEXT, isCompleted INTEGER)',
+          'CREATE TABLE todos(id TEXT PRIMARY KEY, title TEXT, description TEXT, dateCompleted TEXT, priority INTEGER, isCompleted INTEGER)',
         );
       },
       onUpgrade: (db, oldVersion, newVersion) {
         if (oldVersion < 2) {
           db.execute('ALTER TABLE todos ADD COLUMN isCompleted INTEGER DEFAULT 0');
         }
+        else if (oldVersion == 2) {
+          db.execute('ALTER TABLE todos ADD COLUMN priority INTEGER DEFAULT 0');
+          db.execute('ALTER TABLE todos ADD COLUMN dateCompleted TEXT');
+        }
       },
-      version: 2,
+      version: 3,
     );
   }
 
@@ -45,9 +49,11 @@ class TodoDatabase {
     final List<Map<String, dynamic>> todoMaps = await db.query('todos');
     return List.generate(todoMaps.length, (i) {
       return Todo(
-        id: todoMaps[i]['id'],
-        title: todoMaps[i]['title'],
-        description: todoMaps[i]['description'],
+        id: todoMaps[i]['id'] ?? '',
+        title: todoMaps[i]['title'] ?? '',
+        description: todoMaps[i]['description'] ?? '',
+        dateCompleted: todoMaps[i]['dateCompleted'] ?? '',
+        priority: todoMaps[i]['priority'] ?? 0,
         isCompleted: todoMaps[i]['isCompleted'] == 1,
       );
     });
