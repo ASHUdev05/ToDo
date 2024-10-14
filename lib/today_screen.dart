@@ -59,8 +59,8 @@ class _TodayScreenState extends State<TodayScreen> {
     try {
       final now = DateTime.now();
       final completedDate = DateFormat('yyyy-MM-dd').parse(dateCompleted);
-      final difference = completedDate.difference(now).inHours;
-      return difference > 100 ? '>100 hrs' : '$difference hrs';
+      final difference = completedDate.difference(now).inDays;
+      return difference > 7 ? '>1 week' : '$difference days';
     } catch (e) {
       return 'Invalid date';
     }
@@ -95,7 +95,7 @@ class _TodayScreenState extends State<TodayScreen> {
                   color: _getPriorityColor(todos[index].priority),
                   child: ListTile(
                     title: Text(todos[index].title),
-                    subtitle: Text(_getTimeLeft(todos[index].dateCompleted)),
+                    subtitle: Text("Due in ${_getTimeLeft(todos[index].dateCompleted)}"),
                     leading: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
