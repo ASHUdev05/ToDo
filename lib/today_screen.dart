@@ -46,6 +46,11 @@ class _TodayScreenState extends State<TodayScreen> {
     _loadTodos();
   }
 
+  void completeTodo(String id) async {
+    await _todoDatabase.completeTodo(id);
+    _loadTodos();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,6 +65,20 @@ class _TodayScreenState extends State<TodayScreen> {
               itemBuilder: (context, index) {
                 return ListTile(
                   title: Text(todos[index].title),
+                  leading: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Checkbox(
+                        value: todos[index].isCompleted,
+                        onChanged: (value) {
+                          setState(() {
+                            todos[index].isCompleted = value!;
+                          });
+                          completeTodo(todos[index].id);
+                        },
+                      ),
+                    ],
+                  ),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [

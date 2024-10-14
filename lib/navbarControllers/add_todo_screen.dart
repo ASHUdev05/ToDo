@@ -24,6 +24,7 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
   late String todoId;
   late String todoTitle;
   late String todoDesc;
+  late bool todoIsCompleted;
 
   @override
   void initState() {
@@ -32,10 +33,12 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
       todoId = widget.todo!.id;
       todoTitle = widget.todo!.title;
       todoDesc = widget.todo!.description;
+      todoIsCompleted = widget.todo!.isCompleted;
     } else {
       todoId = const Uuid().v4();
       todoTitle = '';
       todoDesc = '';
+      todoIsCompleted = false;
     }
   }
 
@@ -53,6 +56,7 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: 'Enter a Todo',
+                labelText: 'Title',
                 constraints: BoxConstraints(
                   maxWidth: 300,
                 ),
@@ -69,6 +73,7 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: 'Enter a Description',
+                labelText: 'Description',
                 constraints: BoxConstraints(
                   maxWidth: 300,
                 ),
@@ -99,6 +104,7 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                 id: todoId,
                 title: todoTitle,
                 description: todoDesc,
+                isCompleted: todoIsCompleted,
               );
               if (widget.todo != null) {
                 await _todoDatabase.updateTodo(todo);

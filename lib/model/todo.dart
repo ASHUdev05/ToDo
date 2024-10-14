@@ -2,11 +2,13 @@ class Todo {
   final String id;
   final String title;
   final String description;
+  late bool isCompleted;
 
-  const Todo({
+  Todo({
     required this.id,
     required this.title,
     required this.description,
+    required this.isCompleted,
   });
 
   Map<String, Object?> toMap() {
@@ -14,6 +16,7 @@ class Todo {
       'id': id,
       'title': title,
       'description': description,
+      'isCompleted': isCompleted ? 1 : 0,
     };
   }
 
@@ -21,6 +24,6 @@ class Todo {
   // each dog when using the print statement.
   @override
   String toString() {
-    return 'Todo{id: $id, title: $title, description: $description}';
+    return 'Todo{id: $id, title: $title, description: $description, isCompleted: $isCompleted}';
   }
 }
