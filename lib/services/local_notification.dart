@@ -5,7 +5,10 @@ class LocalNotification {
       _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   static Future init() async {
-    _flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestNotificationsPermission();
+    _flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestNotificationsPermission();
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/todo_icon');
     final DarwinInitializationSettings initializationSettingsDarwin =
@@ -65,8 +68,14 @@ class LocalNotification {
     NotificationDetails notificationDetails =
         NotificationDetails(android: androidNotificationDetails);
     await _flutterLocalNotificationsPlugin.periodicallyShow(
-        id, title, body, RepeatInterval.hourly, notificationDetails,
-        payload: payload);
+      id,
+      title,
+      body,
+      RepeatInterval.hourly,
+      notificationDetails,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      payload: payload,
+    );
   }
 
   static Future showDailyNotification({
@@ -85,7 +94,18 @@ class LocalNotification {
     NotificationDetails notificationDetails =
         NotificationDetails(android: androidNotificationDetails);
     await _flutterLocalNotificationsPlugin.periodicallyShow(
-        id, title, body, RepeatInterval.daily, notificationDetails,
-        payload: payload);
+      id,
+      title,
+      body,
+      RepeatInterval.daily,
+      notificationDetails,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      payload: payload,
+    );
+  }
+
+  static Future<bool> isNotificationScheduled(int id) async {
+    final pendingNotifications = await _flutterLocalNotificationsPlugin.pendingNotificationRequests();
+    return pendingNotifications.any((element) => element.id == id);
   }
 }

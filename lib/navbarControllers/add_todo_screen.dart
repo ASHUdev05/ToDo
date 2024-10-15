@@ -242,8 +242,8 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                       await _todoDatabase.updateTodo(todo);
                       LocalNotification.showSimpleNotification(
                         id: todo.id.hashCode,
-                        title: 'Todo Updated',
-                        body: 'Your todo has been updated',
+                        title: 'Todo ${todo.title} Updated',
+                        body: 'Your todo has been set for ${todo.dateCompleted} with reminder set to $_selectedNotificationPeriod',
                         chanId: todo.id,
                         payload: todo.id,
                       );
@@ -251,17 +251,21 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                       await _todoDatabase.insertTodo(todo);
                       LocalNotification.showSimpleNotification(
                         id: todo.id.hashCode,
-                        title: 'Todo Added',
-                        body: 'Your todo has been added',
+                        title: 'Todo ${todo.title} Added',
+                        body: 'Your todo has been set for ${todo.dateCompleted} with reminder set to $_selectedNotificationPeriod',
                         chanId: todo.id,
                         payload: todo.id,
                       );
                     }
 
                     if (_selectedNotificationPeriod == 'Hourly') {
-                      LocalNotification.cancelNotification(todo.id.hashCode);
+                      int notificationId = ('${todo.id}daily').hashCode;
+                      if(await LocalNotification.isNotificationScheduled(notificationId)) {
+                        LocalNotification.cancelNotification(notificationId);
+                      }
+                      notificationId = ('${todo.id}hourly').hashCode;
                       LocalNotification.showHourlyNotification(
-                        id: todo.id.hashCode,
+                        id: notificationId,
                         title: 'Reminder',
                         body:
                         'Don\'t forget your todo: $todoTitle, due in ${_getTimeLeftInHours(todoDateController.text)} hours',
@@ -269,9 +273,13 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                         payload: todo.id,
                       );
                     } else if (_selectedNotificationPeriod == 'Daily') {
-                      LocalNotification.cancelNotification(todo.id.hashCode);
+                      int notificationId = ('${todo.id}hourly').hashCode;
+                      if(await LocalNotification.isNotificationScheduled(notificationId)) {
+                        LocalNotification.cancelNotification(notificationId);
+                      }
+                      notificationId = ('${todo.id}daily').hashCode;
                       LocalNotification.showDailyNotification(
-                        id: todo.id.hashCode,
+                        id: notificationId,
                         title: 'Reminder',
                         body:
                         'Don\'t forget your todo: $todoTitle, due in ${_getTimeLeftInDays(todoDateController.text)} days',
@@ -281,7 +289,9 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                     }
 
                     widget.onAddTodo(todo);
-                    Navigator.pop(context);
+                    if(context.mounted) {
+                      Navigator.of(context).pop();
+                    }
                   },
                   child: Text(widget.todo != null ? 'Update' : 'Add'),
                 ),
