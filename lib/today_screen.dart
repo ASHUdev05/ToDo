@@ -92,8 +92,16 @@ class _TodayScreenState extends State<TodayScreen> {
               itemCount: todos.length,
               itemBuilder: (context, index) {
                 return Container(
-                  color: _getPriorityColor(todos[index].priority),
+                  margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  decoration: BoxDecoration(
+                    color: _getPriorityColor(todos[index].priority),
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(color: Colors.grey),
+                  ),
                   child: ListTile(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
                     title: Text(todos[index].title),
                     subtitle: Text("Due in ${_getTimeLeft(todos[index].dateCompleted)}"),
                     leading: Row(

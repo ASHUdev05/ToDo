@@ -15,10 +15,14 @@ android {
     namespace = "com.ashudev05.todo_offline"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
+    defaultConfig {
+        multiDexEnabled true
+    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+        coreLibraryDesugaringEnabled true
     }
 
     kotlinOptions {
@@ -52,6 +56,10 @@ android {
             signingConfig = signingConfigs.release
         }
     }
+}
+
+dependencies {
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
 }
 
 flutter {
