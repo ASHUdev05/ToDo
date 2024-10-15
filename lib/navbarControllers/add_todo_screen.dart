@@ -258,6 +258,8 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                       );
                     }
 
+                    await LocalNotification.requestExactAlarmPermission();
+
                     if (_selectedNotificationPeriod == 'Hourly') {
                       int notificationId = ('${todo.id}daily').hashCode;
                       if(await LocalNotification.isNotificationScheduled(notificationId)) {
@@ -289,9 +291,10 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                     }
 
                     widget.onAddTodo(todo);
-                    if(context.mounted) {
-                      Navigator.of(context).pop();
+                    if(!context.mounted) {
+                      return;
                     }
+                      Navigator.pop(context);
                   },
                   child: Text(widget.todo != null ? 'Update' : 'Add'),
                 ),

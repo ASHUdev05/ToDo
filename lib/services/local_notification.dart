@@ -1,4 +1,5 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class LocalNotification {
   static final FlutterLocalNotificationsPlugin
@@ -107,5 +108,12 @@ class LocalNotification {
   static Future<bool> isNotificationScheduled(int id) async {
     final pendingNotifications = await _flutterLocalNotificationsPlugin.pendingNotificationRequests();
     return pendingNotifications.any((element) => element.id == id);
+  }
+
+  // Function to request exact alarm permission
+  static Future<void> requestExactAlarmPermission() async {
+    if (await Permission.scheduleExactAlarm.isDenied) {
+      await Permission.scheduleExactAlarm.request();
+    }
   }
 }
